@@ -5,22 +5,25 @@ var keys = require("./keys.js");
 var fs = require("fs");
 var moment = require('moment');
 var spotify = new Spotify(keys.spotify);
-var songQuery = "enter sandman";
-var artist = 'August burns red';
-var bandQuery = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp"
-var movie = "remember the titans";
-var movieQuery = "http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=trilogy"
+// var songQuery = "enter sandman";
+// var artist = 'August burns red';
+// var bandQuery = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp"
+// var movie = "remember the titans";
+// var movieQuery = "http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=trilogy"
 var search = process.argv[2];
+var query = process.argv.slice(3, process.argv.length).join(' ');
+console.log(query);
 
 function liri(search) {
   if (search === 'concert-this') {
-    bandSearch(bandQuery);
+    // var bandQuery = "https://rest.bandsintown.com/artists/" + query + "/events?app_id=codingbootcamp"
+    bandSearch(query);
   }
   else if (search === 'spotify-this-song') {
-    spotifySearch(songQuery);
+    spotifySearch(query);
   }
   else if (search === 'movie-this') {
-    movieSearch(movieQuery);
+    movieSearch(query);
   }
   else if (search === 'do-what-it-says') {
     fs.readFile("random.txt", 'utf8', function (err, contents) {
@@ -68,28 +71,32 @@ function spotifySearch(input) {
     console.log("Album: " + album);
 
     // if no song is inputed default to 'The Sign' by Ace of Base
-  });
+  })
 }
 
 // name of venue, venue location, time (MM/DD/YYYY)
 function bandSearch(input) {
-  axios.get(input).then(
+  bandQuery = "https://rest.bandsintown.com/artists/" + input + "/events?app_id=codingbootcamp"
+  axios.get(bandQuery).then(
     function (response) {
+      // console.log(response);
       venueName = response.data[0].venue.name;
       venueCity = response.data[0].venue.city;
       venueTime = response.data[0].datetime;
       console.log("Name of Venue: " + venueName);
       console.log("Location: " + venueCity);
       console.log("Time: " + venueTime);
-    }
-  )
+    })
+    .catch(err => console.log(err));
 }
 
 // title of movie, year it came out, imdb rating, rotten tomatoes rating, counrty where movie was produced, language of the movie, plot of the movie, actors in the movie
 // if no movie is inputed default to 'Mr. Nobody'
 function movieSearch(input) {
-  axios.get(input).then(
+  movieQuery = "http://www.omdbapi.com/?t=" + input + "&y=&plot=short&apikey=trilogy"
+  axios.get(movieQuery).then(
     function (response) {
+      // console.log(response);
       movieTitle = response.data.Title;
       movieYear = response.data.Year
       imdbRating = response.data.imdbRating;
@@ -106,7 +113,7 @@ function movieSearch(input) {
       console.log("Languange: " + movieLanguage);
       console.log("Plot: " + moviePlot);
       console.log("Actors: " + movieActors);
-    }
-  );
+    })
+    .catch(err => console.log(err));
 }
 
