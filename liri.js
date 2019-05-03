@@ -5,18 +5,12 @@ var keys = require("./keys.js");
 var fs = require("fs");
 var moment = require('moment');
 var spotify = new Spotify(keys.spotify);
-// var songQuery = "enter sandman";
-// var artist = 'August burns red';
-// var bandQuery = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp"
-// var movie = "remember the titans";
-// var movieQuery = "http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=trilogy"
 var search = process.argv[2];
 var query = process.argv.slice(3, process.argv.length).join(' ');
 console.log(query);
 
 function liri(search) {
   if (search === 'concert-this') {
-    // var bandQuery = "https://rest.bandsintown.com/artists/" + query + "/events?app_id=codingbootcamp"
     bandSearch(query);
   }
   else if (search === 'spotify-this-song') {
@@ -31,23 +25,23 @@ function liri(search) {
       command = newContents[0];
       query = newContents[1];
       input = newContents.join(' ');
-      console.log(input);
+      query1 = query.replace(/['"]+/g, '');
       if (err) {
         return console.log(err);
       }
       else {
         if (command === 'concert-this') {
           newInput = contents.slice(0, [])
-          console.log(query);
-          bandSearch(query);
+          console.log(query1);
+          bandSearch(query1);
         }
         else if (command === 'spotify-this-song') {
-          console.log(query);
-          spotifySearch(query);
+          console.log(query1);
+          spotifySearch(query1);
         }
         else if (command === 'movie-this') {
-          console.log(query);
-          movieSearch(query)
+          console.log(query1);
+          movieSearch(query1)
         }
       }
     })
@@ -79,7 +73,6 @@ function bandSearch(input) {
   bandQuery = "https://rest.bandsintown.com/artists/" + input + "/events?app_id=codingbootcamp"
   axios.get(bandQuery).then(
     function (response) {
-      // console.log(response);
       venueName = response.data[0].venue.name;
       venueCity = response.data[0].venue.city;
       venueTime = response.data[0].datetime;
@@ -96,7 +89,6 @@ function movieSearch(input) {
   movieQuery = "http://www.omdbapi.com/?t=" + input + "&y=&plot=short&apikey=trilogy"
   axios.get(movieQuery).then(
     function (response) {
-      // console.log(response);
       movieTitle = response.data.Title;
       movieYear = response.data.Year
       imdbRating = response.data.imdbRating;
