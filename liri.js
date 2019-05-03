@@ -7,7 +7,7 @@ var moment = require('moment');
 var spotify = new Spotify(keys.spotify);
 var search = process.argv[2];
 var query = process.argv.slice(3, process.argv.length).join(' ');
-console.log(query);
+// console.log(query);
 
 function liri(search) {
   if (search === 'concert-this') {
@@ -31,16 +31,15 @@ function liri(search) {
       }
       else {
         if (command === 'concert-this') {
-          newInput = contents.slice(0, [])
-          console.log(query1);
+          // console.log(query1);
           bandSearch(query1);
         }
         else if (command === 'spotify-this-song') {
-          console.log(query1);
+          // console.log(query1);
           spotifySearch(query1);
         }
         else if (command === 'movie-this') {
-          console.log(query1);
+          // console.log(query1);
           movieSearch(query1)
         }
       }
@@ -63,8 +62,6 @@ function spotifySearch(input) {
     console.log("Song Title: " + song);
     console.log("Preview: " + preview);
     console.log("Album: " + album);
-
-    // if no song is inputed default to 'The Sign' by Ace of Base
   })
 }
 
@@ -75,10 +72,12 @@ function bandSearch(input) {
     function (response) {
       venueName = response.data[0].venue.name;
       venueCity = response.data[0].venue.city;
-      venueTime = response.data[0].datetime;
+      time = response.data[0].datetime;
+      var convertedDated = moment(time)
+      venueDate = convertedDated.format("MM/DD/YYYY");
       console.log("Name of Venue: " + venueName);
       console.log("Location: " + venueCity);
-      console.log("Time: " + venueTime);
+      console.log("Date: " + venueDate);
     })
     .catch(err => console.log(err));
 }
