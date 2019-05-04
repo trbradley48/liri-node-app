@@ -19,7 +19,7 @@ Command,"band/artist/movie"
 
 Below is a screenshot of the commands used and their corresponding outputs:
 
-![Camp BootPro Profile Screen](Assignment-10-Demo.PNG)
+![Demo of Liri](Assignment-10-Demo.PNG)
 
 ## Cloning the repo
 
