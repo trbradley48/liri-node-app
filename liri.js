@@ -1,3 +1,4 @@
+// Initialize variables and npm stuff
 require("dotenv").config();
 var Spotify = require("node-spotify-api");
 var axios = require("axios");
@@ -7,8 +8,8 @@ var moment = require('moment');
 var spotify = new Spotify(keys.spotify);
 var search = process.argv[2];
 var query = process.argv.slice(3, process.argv.length).join(' ');
-// console.log(query);
 
+// Main function to decide which search to execute
 function liri(search) {
   if (search === 'concert-this') {
     bandSearch(query);
@@ -31,15 +32,12 @@ function liri(search) {
       }
       else {
         if (command === 'concert-this') {
-          // console.log(query1);
           bandSearch(query1);
         }
         else if (command === 'spotify-this-song') {
-          // console.log(query1);
           spotifySearch(query1);
         }
         else if (command === 'movie-this') {
-          // console.log(query1);
           movieSearch(query1)
         }
       }
@@ -49,23 +47,30 @@ function liri(search) {
 
 liri(search);
 
+// Function for spotify search
 function spotifySearch(input) {
-  spotify.search({ type: 'track', query: input }, function (err, data) {
-    if (err) {
-      return console.log('Error occurred: ' + err);
-    }
-    artist = data.tracks.items[0].artists[0].name;
-    song = data.tracks.items[0].name;
-    preview = data.tracks.items[1].preview_url;
-    album = data.tracks.items[0].album.name;
-    console.log("Artist: " + artist);
-    console.log("Song Title: " + song);
-    console.log("Preview: " + preview);
-    console.log("Album: " + album);
-  })
+  if (input !== '') {
+    spotify.search({ type: 'track', query: input }, function (err, data) {
+      if (err) {
+        return console.log('Error occurred: ' + err);
+      }
+      artist = data.tracks.items[0].artists[0].name;
+      song = data.tracks.items[0].name;
+      preview = data.tracks.items[1].preview_url;
+      album = data.tracks.items[0].album.name;
+      console.log("Artist: " + artist);
+      console.log("Song Title: " + song);
+      console.log("Preview: " + preview);
+      console.log("Album: " + album);
+    })
+  }
+  else {
+    input = "The Sign";
+    spotifySearch(input);
+  }
 }
 
-// name of venue, venue location, time (MM/DD/YYYY)
+// Function for concert search
 function bandSearch(input) {
   bandQuery = "https://rest.bandsintown.com/artists/" + input + "/events?app_id=codingbootcamp"
   axios.get(bandQuery).then(
@@ -82,10 +87,10 @@ function bandSearch(input) {
     .catch(err => console.log(err));
 }
 
-// title of movie, year it came out, imdb rating, rotten tomatoes rating, counrty where movie was produced, language of the movie, plot of the movie, actors in the movie
-// if no movie is inputed default to 'Mr. Nobody'
+// Function for movie search
 function movieSearch(input) {
-  movieQuery = "http://www.omdbapi.com/?t=" + input + "&y=&plot=short&apikey=trilogy"
+  if (input !== '') {
+    movieQuery = "http://www.omdbapi.com/?t=" + input + "&y=&plot=short&apikey=trilogy"
   axios.get(movieQuery).then(
     function (response) {
       movieTitle = response.data.Title;
@@ -106,5 +111,10 @@ function movieSearch(input) {
       console.log("Actors: " + movieActors);
     })
     .catch(err => console.log(err));
+  }
+  else {
+    input = "Mr. Nobody";
+    movieSearch(input);
+  }
 }
 
